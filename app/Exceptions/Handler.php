@@ -2,8 +2,11 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use GuzzleHttp\Psr7\Query;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -45,6 +48,24 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+        $this->renderable(function (\Exception $e, $request) {
+            if ($request->is('api/*')) {
+                if ($e instanceof ModelNotFoundException) {
+                    return response()->json([
+                        'message' => "Reocrd does not exist in database",
+                    ], 404);
+                }
+                if ($e instanceof QueryException) {
+                    return response()->json([
+                        'message' => "Something went wrong in Database",
+                    ], 422);
+                }
+                return response()->json([
+
+                    'message' => $e->getMessage(),
+                ], 422);
+            }
         });
     }
 }
