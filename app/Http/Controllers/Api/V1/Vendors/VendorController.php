@@ -10,9 +10,14 @@ use App\Http\Requests\Ads\AdUpdateRequest;
 
 class VendorController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $ads = Ad::with('user')->where('user_id', Auth::user()->id)->get();
+        $ads = Ad::with(['user', 'media'])->where('user_id', Auth::user()->id)->get();
         if (!$ads) {
             return response()->json([
                 'message' => 'No Ads Exists'
@@ -41,7 +46,7 @@ class VendorController extends Controller
     }
     public function show($id)
     {
-        $ad = Ad::with('user')->where('id', $id)->first();
+        $ad = Ad::with(['user', 'media'])->where('id', $id)->first();
         $this->authorize('view', $ad);
         return response()->json([
             'message' => 'Success',

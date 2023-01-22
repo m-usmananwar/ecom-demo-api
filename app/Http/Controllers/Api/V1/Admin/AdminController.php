@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function indexUser()
     {
-        $users = User::where('role', \App\Enums\Roles::VENDOR)->get();
+        $users = User::with('media')->where('role', \App\Enums\Roles::VENDOR)->get();
         return response()->json([
             'message' => 'Success',
             'users' => $users
@@ -21,7 +21,7 @@ class AdminController extends Controller
     }
     public function showUser($id)
     {
-        $user = User::where('id', $id)->first();
+        $user = User::with('media')->where('id', $id)->first();
         return response()->json([
             'message' => 'Success',
             'user' => $user
@@ -42,7 +42,7 @@ class AdminController extends Controller
     public function updateUser(UpdateUserRequest $request, $id)
     {
 
-        $user = User::where('id', $id)->first();
+        $user = User::with('media')->where('id', $id)->first();
         $user->update($request->validated());
         if ($request->hasFile('image')) {
             $user->clearMediaCollection('profile-images');
@@ -56,7 +56,7 @@ class AdminController extends Controller
     }
     public function indexAd()
     {
-        $ads = Ad::with('user')->get();
+        $ads = Ad::with(['user','media'])->get();
         return response()->json([
             'message' => 'Success',
             'ads' => $ads
@@ -64,7 +64,7 @@ class AdminController extends Controller
     }
     public function showAd($id)
     {
-        $ad = Ad::with('user')->where('id', $id)->first();
+        $ad = Ad::with(['user','media'])->where('id', $id)->first();
         return response()->json([
             'message' => 'Success',
             'ad' => $ad

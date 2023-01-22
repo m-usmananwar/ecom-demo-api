@@ -24,7 +24,7 @@ class User extends Authenticatable implements HasMedia
     protected $guarded = [
         'id',
     ];
-
+    protected $appends = ['created_diff'];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -44,10 +44,13 @@ class User extends Authenticatable implements HasMedia
         'role' => \App\Enums\Roles::class,
         'email_verified_at' => 'datetime',
     ];
-
     public function setPasswordAttribute($passowrd)
     {
         $this->attributes['password'] = Hash::make($passowrd);
+    }
+    public function getCreatedDiffAttribute()
+    {
+        return $this->created_at->diffForHumans();
     }
     public function ads()
     {

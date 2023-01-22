@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class UserController extends Controller
 {
 
-    public function login(UserLoginRequest $request)
+    public function login(Request $request)
     {
         $user = User::where('email', $request->email)->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -28,19 +28,20 @@ class UserController extends Controller
             'message' => 'Success',
             'token' => $token,
             'user' => $user,
+            'url' => $user->getFirstMediaUrl('profile-image')
         ]);
     }
     public function register(UserRegisterRequest $request)
     {
         $user = User::create($request->validated());
+        $user = $user->refresh();
         if ($request->hasFile('image')) {
             $user->addMediaFromRequest('image')
-                ->toMediaCollection('profile-images');
+                ->toMediaCollection('profile-image');
         }
-        $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'message' => 'Success',
-            'token' => $token,
+            'token' => 'Test Token',
             'user' => $user,
         ]);
     }

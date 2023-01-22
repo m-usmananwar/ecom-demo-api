@@ -5,19 +5,21 @@ namespace App\Http\Controllers\Api\V1\Ads;
 use App\Models\Ad;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class AdController extends Controller
 {
     public function index()
     {
-        $ads = Ad::with('user')->where('is_featured', 1)->get();
+        $ads = Ad::with(['user','media'])->where('is_featured', 1)->get();
         return response()->json([
             'message' => 'Success',
             'ads' => $ads
         ]);
     }
-    public function show(Ad $ad)
+    public function show($id)
     {
+        $ad = Ad::with(['user','media'])->find($id);
         return response()->json([
             'message' => 'Success',
             'ad' => $ad
@@ -27,7 +29,7 @@ class AdController extends Controller
     {
         dd($request->all());
         $qry = Ad::query()
-            ->with('user')
+            ->with(['user','media'])
             ->when($request->model, function ($query, $model) {
                 $query->where('car_make', 'like', '%' . $model . '%');
             })
