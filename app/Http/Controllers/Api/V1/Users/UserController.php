@@ -28,7 +28,6 @@ class UserController extends Controller
             'message' => 'Success',
             'token' => $token,
             'user' => $user,
-            'url' => $user->getFirstMediaUrl('profile-image')
         ]);
     }
     public function register(UserRegisterRequest $request)
@@ -41,7 +40,6 @@ class UserController extends Controller
         }
         return response()->json([
             'message' => 'Success',
-            'token' => 'Test Token',
             'user' => $user,
         ]);
     }

@@ -56,7 +56,7 @@ class AdminController extends Controller
     }
     public function indexAd()
     {
-        $ads = Ad::with(['user','media'])->get();
+        $ads = Ad::with(['user', 'media'])->get();
         return response()->json([
             'message' => 'Success',
             'ads' => $ads
@@ -64,7 +64,7 @@ class AdminController extends Controller
     }
     public function showAd($id)
     {
-        $ad = Ad::with(['user','media'])->where('id', $id)->first();
+        $ad = Ad::with(['user', 'media'])->where('id', $id)->first();
         return response()->json([
             'message' => 'Success',
             'ad' => $ad

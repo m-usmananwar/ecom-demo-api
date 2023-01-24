@@ -30,6 +30,7 @@ class AdUpdateRequest extends FormRequest
                 'car_model' => ['required', 'min:4', 'max:20'],
                 'car_color' => ['required', 'min:4', 'max:20'],
                 'car_millage' => ['required', 'min:4', 'max:20'],
+                'is_featured' => ['required']
             ];
 
         return $rules;
