@@ -48,6 +48,7 @@ class UserController extends Controller
         Auth::user()->tokens()->delete();
         return response()->json([
             'message' => 'Success',
+            'Response' => 'User has been logged out'
         ]);
     }
 }

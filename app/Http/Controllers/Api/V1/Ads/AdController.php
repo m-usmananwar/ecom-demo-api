@@ -11,7 +11,7 @@ class AdController extends Controller
 {
     public function index()
     {
-        $ads = Ad::with(['user','media'])->where('is_featured', 1)->get();
+        $ads = Ad::with(['user', 'media'])->where('is_featured', 1)->get();
         return response()->json([
             'message' => 'Success',
             'ads' => $ads
@@ -19,7 +19,7 @@ class AdController extends Controller
     }
     public function show($id)
     {
-        $ad = Ad::with(['user','media'])->find($id);
+        $ad = Ad::with(['user', 'media'])->find($id);
         return response()->json([
             'message' => 'Success',
             'ad' => $ad
@@ -27,26 +27,25 @@ class AdController extends Controller
     }
     public function search(Request $request)
     {
-        dd($request->all());
         $qry = Ad::query()
-            ->with(['user','media'])
-            ->when($request->model, function ($query, $model) {
+            ->with(['user', 'media'])
+            ->when($request->query('model'), function ($query, $model) {
                 $query->where('car_make', 'like', '%' . $model . '%');
             })
-            ->when($request->color, function ($query, $color) {
+            ->when($request->query('color'), function ($query, $color) {
                 $query->where('car_color', 'like', '%' . $color . '%');
-            })->when(($request->millage_from && $request->millage_to),
+            })->when(($request->query('millage_from') && $request->query('millage_to')),
                 function ($query) use ($request) {
-                    $query->whereBetween('car_millage', [(int)$request->millage_from, (int)$request->millage_to]);
+                    $query->whereBetween('car_millage', [(int)$request->query('millage_from'), (int)$request->query('millage_to')]);
                 }
-            )->when($request->year_from && $request->year_to, function ($query) use ($request) {
-                $query->whereBetween('car_model', [(int)$request->year_from, (int)$request->year_to]);
+            )->when($request->query('year_from') && $request->query('year_to'), function ($query) use ($request) {
+                $query->whereBetween('car_model', [(int)$request->query('year_from'), (int)$request->query('year_to')]);
             });
 
-        if ($request->has('city')) {
+        if ($request->query('city')) {
             $qry = $qry
                 ->whereHas('user', function ($query) use ($request) {
-                    $query->where('city', 'like', '%' . $request->city . '%');
+                    $query->where('city', 'like', '%' . $request->query('city') . '%');
                 });
         }
         $ads = $qry
